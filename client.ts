@@ -43,7 +43,7 @@ export class ApiClient {
     }
   }
 
-  private async getAuthHeaders() {
+  private async getAuthHeaders(): Promise<Record<string, string>> {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.access_token) {
@@ -82,12 +82,14 @@ export class ApiClient {
       preferences: data.preferences
     };
     
+    const headers: Record<string, string> = {
+      ...authHeaders,
+      'X-CSRF-Token': csrfToken || ''
+    };
+    
     return this.makeRequest('/auth/profile', {
       method: 'PUT',
-      headers: {
-        ...authHeaders,
-        'X-CSRF-Token': csrfToken || ''
-      },
+      headers,
       body: JSON.stringify(sanitizedData),
     });
   }
@@ -131,12 +133,14 @@ export class ApiClient {
     const authHeaders = await this.getAuthHeaders();
     const csrfToken = getCSRFToken();
     
+    const headers: Record<string, string> = {
+      ...authHeaders,
+      'X-CSRF-Token': csrfToken || ''
+    };
+    
     return this.makeRequest('/cart/add', {
       method: 'POST',
-      headers: {
-        ...authHeaders,
-        'X-CSRF-Token': csrfToken || ''
-      },
+      headers,
       body: JSON.stringify({ 
         productId: sanitizeInput(productId), 
         quantity 
@@ -152,11 +156,13 @@ export class ApiClient {
     
     const csrfToken = getCSRFToken();
     
+    const headers: Record<string, string> = {
+      'X-CSRF-Token': csrfToken || ''
+    };
+    
     return this.makeRequest('/newsletter/subscribe', {
       method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken || ''
-      },
+      headers,
       body: JSON.stringify({ email: sanitizeInput(email) }),
     });
   }

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Search, Filter, Calendar, User, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Input } from '../ui/input';
 
 interface BlogPost {
   id: string;
@@ -52,11 +51,11 @@ export function BlogListing({ posts, onPostClick }: BlogListingProps) {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
+            <input
               placeholder="Search articles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 w-full px-3 py-2 border border-input rounded-md"
             />
           </div>
           

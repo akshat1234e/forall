@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { useAuth } from '../AuthProvider';
-import { supabase } from '../../client';
+import { supabase } from '../client';
 
 interface Product {
   id: string;
