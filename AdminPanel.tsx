@@ -35,13 +35,23 @@ export function AdminPanel() {
 
   const checkAuth = async () => {
     try {
-      const { data: { user } } = await auth.getUser();
+      const { data: { user }, error } = await auth.getUser();
+      
+      if (error) {
+        console.error('Authentication error:', error);
+        toast.error('Authentication failed. Please sign in again.');
+        setUser(null);
+        return;
+      }
+      
       setUser(user);
       if (user) {
-        loadAnalytics();
+        await loadAnalytics();
       }
     } catch (error) {
       console.error('Authentication check failed:', error);
+      toast.error('Unable to verify authentication. Please try again.');
+      toast.error('Unable to verify authentication. Please try again.');
       setUser(null);
     }
   };
