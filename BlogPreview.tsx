@@ -5,6 +5,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Clock, User, ArrowRight } from 'lucide-react';
+import { sanitizeHtml } from './utils/security';
 
 interface BlogPost {
   id: number;
@@ -103,9 +104,10 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
               {post.title}
             </h3>
             
-            <p className="text-muted-foreground text-sm mb-4 line-clamp-3 leading-relaxed">
-              {post.excerpt}
-            </p>
+            <p 
+              className="text-muted-foreground text-sm mb-4 line-clamp-3 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.excerpt) }}
+            />
 
             {/* Meta Info */}
             <div className="flex items-center justify-between text-xs text-muted-foreground geometric-font">

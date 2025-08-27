@@ -168,7 +168,7 @@ export function ProductDetail({ productId, onBack }: ProductDetailProps) {
               {/* Main Image */}
               <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden">
                 <ImageWithFallback
-                  src={product.images[selectedImageIndex] || product.images[0]}
+                  src={product.images[Math.min(selectedImageIndex, product.images.length - 1)] || product.images[0] || ''}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />

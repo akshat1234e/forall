@@ -34,10 +34,15 @@ export function AdminPanel() {
   }, []);
 
   const checkAuth = async () => {
-    const { data: { user } } = await auth.getUser();
-    setUser(user);
-    if (user) {
-      loadAnalytics();
+    try {
+      const { data: { user } } = await auth.getUser();
+      setUser(user);
+      if (user) {
+        loadAnalytics();
+      }
+    } catch (error) {
+      console.error('Authentication check failed:', error);
+      setUser(null);
     }
   };
 
@@ -47,8 +52,8 @@ export function AdminPanel() {
       const { data: { session } } = await auth.getSession();
       if (!session) return;
 
-      // Analytics endpoint not implemented yet, using placeholder data
-      setAnalytics({
+      // TODO: Replace with real API integration
+      const MOCK_ANALYTICS = {
         products: 4,
         orders: 0,
         newsletters: 0,
@@ -56,7 +61,8 @@ export function AdminPanel() {
         contacts: 0,
         revenue: 0,
         avgOrderValue: 0
-      });
+      };
+      setAnalytics(MOCK_ANALYTICS);
     } catch (error) {
       console.error('Error loading analytics:', error);
       toast.error('Failed to load analytics');

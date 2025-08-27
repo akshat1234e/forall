@@ -30,7 +30,7 @@ export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) 
       onNavigateToProducts();
     } else {
       window.history.pushState({}, '', '/products');
-      window.location.reload();
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
     setIsMenuOpen(false);
   };
@@ -40,7 +40,7 @@ export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) 
       onNavigateToBlog();
     } else {
       window.history.pushState({}, '', '/blog');
-      window.location.reload();
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
     setIsMenuOpen(false);
   };

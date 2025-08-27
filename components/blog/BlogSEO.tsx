@@ -25,62 +25,72 @@ export function BlogSEO({
     // Update document title
     document.title = title;
 
-    // Create or update meta tags
-    const updateMetaTag = (name: string, content: string, property?: boolean) => {
-      const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
-      let meta = document.querySelector(selector) as HTMLMetaElement;
+    // Batch DOM operations for better performance
+    const metaUpdates: Array<{ name: string; content: string; property?: boolean }> = [];
+    
+    const queueMetaUpdate = (name: string, content: string, property?: boolean) => {
+      metaUpdates.push({ name, content, property });
+    };
+    
+    const applyMetaUpdates = () => {
+      const fragment = document.createDocumentFragment();
       
-      if (!meta) {
-        meta = document.createElement('meta');
-        if (property) {
-          meta.setAttribute('property', name);
-        } else {
-          meta.setAttribute('name', name);
+      metaUpdates.forEach(({ name, content, property }) => {
+        const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+        let meta = document.querySelector(selector) as HTMLMetaElement;
+        
+        if (!meta) {
+          meta = document.createElement('meta');
+          if (property) {
+            meta.setAttribute('property', name);
+          } else {
+            meta.setAttribute('name', name);
+          }
+          fragment.appendChild(meta);
         }
-        document.head.appendChild(meta);
-      }
+        
+        meta.setAttribute('content', content);
+      });
       
-      meta.setAttribute('content', content);
+      if (fragment.children.length > 0) {
+        document.head.appendChild(fragment);
+      }
     };
 
-    // Basic SEO tags
-    updateMetaTag('description', description);
-    updateMetaTag('keywords', tags?.join(', ') || '');
-    
-    // Open Graph tags
-    updateMetaTag('og:title', title, true);
-    updateMetaTag('og:description', description, true);
-    updateMetaTag('og:type', 'article', true);
+    // Queue all meta tag updates
+    queueMetaUpdate('description', description);
+    queueMetaUpdate('keywords', tags?.join(', ') || '');
+    queueMetaUpdate('og:title', title, true);
+    queueMetaUpdate('og:description', description, true);
+    queueMetaUpdate('og:type', 'article', true);
     
     if (image) {
-      updateMetaTag('og:image', image, true);
+      queueMetaUpdate('og:image', image, true);
+      queueMetaUpdate('twitter:image', image);
     }
     
     if (url) {
-      updateMetaTag('og:url', url, true);
+      queueMetaUpdate('og:url', url, true);
     }
 
-    // Twitter Card tags
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', title);
-    updateMetaTag('twitter:description', description);
-    
-    if (image) {
-      updateMetaTag('twitter:image', image);
-    }
+    queueMetaUpdate('twitter:card', 'summary_large_image');
+    queueMetaUpdate('twitter:title', title);
+    queueMetaUpdate('twitter:description', description);
 
-    // Article specific tags
     if (author) {
-      updateMetaTag('article:author', author, true);
+      queueMetaUpdate('article:author', author, true);
     }
     
     if (publishedAt) {
-      updateMetaTag('article:published_time', publishedAt, true);
+      queueMetaUpdate('article:published_time', publishedAt, true);
     }
     
     if (category) {
-      updateMetaTag('article:section', category, true);
+      queueMetaUpdate('article:section', category, true);
     }
+    
+    // Apply all updates in one batch
+    applyMetaUpdates();
     
     if (tags) {
       tags.forEach(tag => {

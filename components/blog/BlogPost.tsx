@@ -30,12 +30,27 @@ export function BlogPost({ post, onProductClick }: BlogPostProps) {
   const [showComments, setShowComments] = useState(false);
 
   const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: post.title,
-        text: post.excerpt,
-        url: window.location.href,
-      });
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt,
+          url: window.location.href,
+        });
+      } else {
+        // Fallback for browsers without Web Share API
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Share failed:', error);
+      // Fallback to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      } catch (clipboardError) {
+        console.error('Clipboard access failed:', clipboardError);
+      }
     }
   };
 
