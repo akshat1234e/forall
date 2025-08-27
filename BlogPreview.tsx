@@ -170,8 +170,7 @@ export function BlogPreview() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Expert tips, ingredient insights, and skincare routines to help you 
-            achieve your best skin naturally.
+            Expert tips, ingredient insights, and skincare routines to help you achieve your best skin naturally.
           </motion.p>
         </motion.div>
 
