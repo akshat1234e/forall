@@ -1,3 +1,7 @@
-// Environment variables - use .env file for production
-export const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "tapshqfcltwxrtpmsycm";
-export const publicAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhcHNocWZjbHR3eHJ0cG1zeWNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYwNTI2OTksImV4cCI6MjA3MTYyODY5OX0.Lly8ryoRX869H1Aar98qB6PoMGfZ0rQ6w0XfDHovRR8";
+// Environment variables - MUST be set in .env file
+export const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+export const publicAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!projectId || !publicAnonKey) {
+  throw new Error('Missing required environment variables: VITE_SUPABASE_PROJECT_ID and VITE_SUPABASE_ANON_KEY');
+}

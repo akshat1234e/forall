@@ -9,7 +9,7 @@ const app = new Hono();
 // CORS and logging
 app.use('*', cors({
   origin: '*',
-  allowHeaders: ['Content-Type', 'Authorization'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use('*', logger(console.log));
@@ -223,6 +223,12 @@ app.get('/make-server-9c9fcc04/cart', async (c) => {
 
 app.post('/make-server-9c9fcc04/cart/add', async (c) => {
   try {
+    // CSRF protection
+    const csrfToken = c.req.header('X-CSRF-Token');
+    if (!csrfToken) {
+      return c.json({ error: 'CSRF token required' }, 403);
+    }
+    
     const accessToken = c.req.header('Authorization')?.split(' ')[1];
     const { data: { user }, error } = await supabase.auth.getUser(accessToken);
 
@@ -277,6 +283,12 @@ app.post('/make-server-9c9fcc04/cart/add', async (c) => {
 // Newsletter Routes
 app.post('/make-server-9c9fcc04/newsletter/subscribe', async (c) => {
   try {
+    // CSRF protection
+    const csrfToken = c.req.header('X-CSRF-Token');
+    if (!csrfToken) {
+      return c.json({ error: 'CSRF token required' }, 403);
+    }
+    
     const { email } = await c.req.json();
 
     if (!email) {
