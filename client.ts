@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from './info';
+import { validateEmail, validateQuantity, sanitizeInput, getCSRFToken } from './utils/security';
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(
@@ -72,12 +73,22 @@ export class ApiClient {
     });
   }
 
-  async updateProfile(data: { name?: string; preferences?: any }) {
+  async updateProfile(data: { name?: string; preferences?: Record<string, unknown> }) {
     const authHeaders = await this.getAuthHeaders();
+    const csrfToken = getCSRFToken();
+    
+    const sanitizedData = {
+      name: data.name ? sanitizeInput(data.name) : undefined,
+      preferences: data.preferences
+    };
+    
     return this.makeRequest('/auth/profile', {
       method: 'PUT',
-      headers: authHeaders,
-      body: JSON.stringify(data),
+      headers: {
+        ...authHeaders,
+        'X-CSRF-Token': csrfToken || ''
+      },
+      body: JSON.stringify(sanitizedData),
     });
   }
 
@@ -113,19 +124,40 @@ export class ApiClient {
   }
 
   async addToCart(productId: string, quantity: number = 1) {
+    if (!validateQuantity(quantity)) {
+      throw new Error('Invalid quantity. Must be a positive integer.');
+    }
+    
     const authHeaders = await this.getAuthHeaders();
+    const csrfToken = getCSRFToken();
+    
     return this.makeRequest('/cart/add', {
       method: 'POST',
-      headers: authHeaders,
-      body: JSON.stringify({ productId, quantity }),
+      headers: {
+        ...authHeaders,
+        'X-CSRF-Token': csrfToken || ''
+      },
+      body: JSON.stringify({ 
+        productId: sanitizeInput(productId), 
+        quantity 
+      }),
     });
   }
 
   // Newsletter methods
   async subscribeNewsletter(email: string) {
+    if (!validateEmail(email)) {
+      throw new Error('Invalid email address.');
+    }
+    
+    const csrfToken = getCSRFToken();
+    
     return this.makeRequest('/newsletter/subscribe', {
       method: 'POST',
-      body: JSON.stringify({ email }),
+      headers: {
+        'X-CSRF-Token': csrfToken || ''
+      },
+      body: JSON.stringify({ email: sanitizeInput(email) }),
     });
   }
 

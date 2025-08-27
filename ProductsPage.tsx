@@ -89,6 +89,9 @@ const products: Product[] = [
 export function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productImages, setProductImages] = useState<{ [key: string]: string }>({});
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(6);
 
   useEffect(() => {
     // Load product images
@@ -153,8 +156,12 @@ export function ProductsPage() {
           {['All', 'Cleansers', 'Masks', 'Moisturizers', 'Serums', 'Exfoliators', 'Toners'].map((category) => (
             <Button
               key={category}
-              variant={category === 'All' ? 'default' : 'outline'}
+              variant={selectedCategory === category ? 'default' : 'outline'}
               className="rounded-full px-6 py-2 transition-all duration-300 hover:scale-105"
+              onClick={() => {
+                setSelectedCategory(category);
+                setCurrentPage(1);
+              }}
             >
               {category}
             </Button>
@@ -163,7 +170,10 @@ export function ProductsPage() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, index) => (
+          {products
+            .filter(product => selectedCategory === 'All' || product.category === selectedCategory)
+            .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
+            .map((product, index) => (
             <Card 
               key={product.id}
               className="group cursor-pointer overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 card-3d"
@@ -240,15 +250,35 @@ export function ProductsPage() {
           ))}
         </div>
 
-        {/* Load More Button */}
-        <div className="flex justify-center mt-12">
-          <Button 
-            variant="outline" 
-            size="lg"
-            className="rounded-full px-8 py-3 transition-all duration-300 hover:scale-105"
-          >
-            Load More Products
-          </Button>
+        {/* Pagination */}
+        <div className="flex flex-col items-center mt-12 space-y-4">
+          {(() => {
+            const filteredProducts = products.filter(product => 
+              selectedCategory === 'All' || product.category === selectedCategory
+            );
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            const hasNextPage = currentPage < totalPages;
+            
+            return (
+              <>
+                <p className="text-muted-foreground text-center">
+                  Showing {Math.min(filteredProducts.length, currentPage * productsPerPage)} of {filteredProducts.length} products
+                  {selectedCategory !== 'All' && ` in ${selectedCategory}`}
+                </p>
+                {hasNextPage && (
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    className="rounded-full px-8 py-3 transition-all duration-300 hover:scale-105"
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                  >
+                    Load More Products
+                  </Button>
+                )}
+              </>
+            );
+          })()
+          }
         </div>
       </div>
     </div>

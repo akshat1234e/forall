@@ -11,9 +11,10 @@ import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
 import { ProductsPage } from './components/ProductsPage';
 import { BlogPage } from './components/blog';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog' | 'admin'>('home');
 
   useEffect(() => {
     // Handle URL changes and navigation
@@ -23,6 +24,8 @@ export default function App() {
         setCurrentPage('products');
       } else if (path.startsWith('/blog')) {
         setCurrentPage('blog');
+      } else if (path.startsWith('/admin')) {
+        setCurrentPage('admin');
       } else {
         setCurrentPage('home');
       }
@@ -78,6 +81,34 @@ export default function App() {
     setCurrentPage('blog');
     window.history.pushState({}, '', '/blog');
   };
+
+  const navigateToAdmin = () => {
+    setCurrentPage('admin');
+    window.history.pushState({}, '', '/admin');
+  };
+
+  if (currentPage === 'admin') {
+    return (
+      <AuthProvider>
+        <CartProvider>
+          <div className="min-h-screen bg-background">
+            <AdminDashboard />
+            
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: 'var(--background)',
+                  color: 'var(--foreground)',
+                  border: '1px solid var(--border)',
+                },
+              }}
+            />
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    );
+  }
 
   if (currentPage === 'blog') {
     return (
