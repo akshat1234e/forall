@@ -7,9 +7,10 @@ import { useCart } from './CartProvider';
 
 interface HeaderProps {
   onNavigateToProducts?: () => void;
+  onNavigateToBlog?: () => void;
 }
 
-export function Header({ onNavigateToProducts }: HeaderProps) {
+export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut } = useAuth();
@@ -28,8 +29,17 @@ export function Header({ onNavigateToProducts }: HeaderProps) {
     if (onNavigateToProducts) {
       onNavigateToProducts();
     } else {
-      // Fallback for when used in other pages
       window.history.pushState({}, '', '/products');
+      window.location.reload();
+    }
+    setIsMenuOpen(false);
+  };
+
+  const handleBlogClick = () => {
+    if (onNavigateToBlog) {
+      onNavigateToBlog();
+    } else {
+      window.history.pushState({}, '', '/blog');
       window.location.reload();
     }
     setIsMenuOpen(false);
@@ -73,12 +83,12 @@ export function Header({ onNavigateToProducts }: HeaderProps) {
             >
               About
             </a>
-            <a 
-              href="#blog" 
+            <button 
+              onClick={handleBlogClick}
               className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
             >
               Blog
-            </a>
+            </button>
             <a 
               href="#contact" 
               className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
@@ -156,13 +166,12 @@ export function Header({ onNavigateToProducts }: HeaderProps) {
               >
                 About
               </a>
-              <a 
-                href="#blog" 
-                className="block text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"
-                onClick={() => setIsMenuOpen(false)}
+              <button 
+                onClick={handleBlogClick}
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"
               >
                 Blog
-              </a>
+              </button>
               <a 
                 href="#contact" 
                 className="block text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"

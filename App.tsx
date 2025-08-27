@@ -10,9 +10,10 @@ import { BlogPreview } from './components/BlogPreview';
 import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
 import { ProductsPage } from './components/ProductsPage';
+import { BlogPage } from './components/blog';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'products'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog'>('home');
 
   useEffect(() => {
     // Handle URL changes and navigation
@@ -20,6 +21,8 @@ export default function App() {
       const path = window.location.pathname;
       if (path === '/products') {
         setCurrentPage('products');
+      } else if (path.startsWith('/blog')) {
+        setCurrentPage('blog');
       } else {
         setCurrentPage('home');
       }
@@ -71,6 +74,34 @@ export default function App() {
     window.history.pushState({}, '', '/');
   };
 
+  const navigateToBlog = () => {
+    setCurrentPage('blog');
+    window.history.pushState({}, '', '/blog');
+  };
+
+  if (currentPage === 'blog') {
+    return (
+      <AuthProvider>
+        <CartProvider>
+          <div className="min-h-screen bg-background">
+            <BlogPage />
+            
+            <Toaster 
+              position="top-right"
+              toastOptions={{
+                style: {
+                  background: 'var(--background)',
+                  color: 'var(--foreground)',
+                  border: '1px solid var(--border)',
+                },
+              }}
+            />
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    );
+  }
+
   if (currentPage === 'products') {
     return (
       <AuthProvider>
@@ -100,7 +131,7 @@ export default function App() {
       <CartProvider>
         <div className="min-h-screen bg-background">
           {/* Navigation */}
-          <Header onNavigateToProducts={navigateToProducts} />
+          <Header onNavigateToProducts={navigateToProducts} onNavigateToBlog={navigateToBlog} />
 
           {/* Main Content */}
           <main>
