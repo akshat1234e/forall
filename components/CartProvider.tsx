@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { apiClient } from '../utils/supabase/client.ts';
 import { useAuth } from './AuthProvider';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface CartItem {
   productId: string;

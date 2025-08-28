@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView } from 'framer-motion';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { toast } from 'sonner@2.0.3';

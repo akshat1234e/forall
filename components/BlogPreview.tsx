@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView } from 'framer-motion';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
@@ -129,50 +129,26 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
 }
 
 export function BlogPreview() {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
-
   return (
     <section
-      ref={sectionRef}
       id="blog"
       className="py-20 lg:py-28 bg-background"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.div
-            className="script-font text-xl text-primary mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+        <div className="text-center mb-16">
+          <div className="text-xl text-green-600 mb-4">
             Learn & Glow
-          </motion.div>
+          </div>
           
-          <motion.h2
-            className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <h2 className="text-3xl font-bold mb-6">
             Skincare Wisdom
-          </motion.h2>
+          </h2>
           
-          <motion.p
-            className="text-lg text-muted-foreground max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Expert tips, ingredient insights, and skincare routines to help you achieve your best skin naturally.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -182,21 +158,11 @@ export function BlogPreview() {
         </div>
 
         {/* View All Button */}
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-3 h-auto text-base font-medium geometric-font"
-          >
+        <div className="text-center">
+          <button className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-3 rounded text-base font-medium">
             View All Articles
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     </section>
   );

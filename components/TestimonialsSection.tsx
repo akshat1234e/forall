@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'motion/react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Star, Quote } from 'lucide-react';
 

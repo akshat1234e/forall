@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from './info';
-import { validateEmail, validateQuantity, sanitizeInput, getCSRFToken } from './utils/security';
+import { validateEmail, validateQuantity, sanitizeInput, getCSRFToken } from '../security';
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(

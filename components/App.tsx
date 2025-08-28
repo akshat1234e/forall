@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Toaster } from './components/ui/sonner';
-import { AuthProvider } from './components/AuthProvider';
-import { CartProvider } from './components/CartProvider';
-import { Header } from './components/Header';
-import { HeroSection } from './components/HeroSection';
-import { FeaturedProducts } from './components/FeaturedProducts';
-import { TestimonialsSection } from './components/TestimonialsSection';
-import { BlogPreview } from './components/BlogPreview';
-import { NewsletterSection } from './components/NewsletterSection';
-import { Footer } from './components/Footer';
-import { ProductsPage } from './components/ProductsPage';
-import { BlogPage } from './components/blog';
-import { AdminDashboard } from './components/admin/AdminDashboard';
+import { Toaster } from './ui/sonner';
+import { AuthProvider } from './AuthProvider';
+import { CartProvider } from './CartProvider';
+import { Header } from './Header';
+import { HeroSection } from './HeroSection';
+import { FeaturedProducts } from './FeaturedProducts';
+import { TestimonialsSection } from './TestimonialsSection';
+import { BlogPreview } from './BlogPreview';
+import { NewsletterSection } from './NewsletterSection';
+import { Footer } from './Footer';
+import { ProductsPage } from './ProductsPage';
+import { BlogPage } from './blog';
+import { AdminDashboard } from './admin/AdminDashboard';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog' | 'admin'>('home');

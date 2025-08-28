@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from './ui/button';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Sparkles, Leaf, Star } from 'lucide-react';
