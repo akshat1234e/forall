@@ -157,7 +157,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 - **Accessibility Score**: 98+
 - **Best Practices**: 100
 - **SEO Score**: 95+
-- **Bundle Size**: < 500KB (gzipped)
+- **Bundle Size**: 176KB (gzipped)
 - **Time to Interactive**: < 2s
 
 ## 🧪 Development
