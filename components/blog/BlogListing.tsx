@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, Calendar, User, Clock } from 'lucide-react';
+import { Search, Calendar, User, Clock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 

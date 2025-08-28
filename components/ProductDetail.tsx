@@ -3,7 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
+
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { 
   Star, 
@@ -19,7 +19,7 @@ import {
   Check
 } from 'lucide-react';
 import { apiClient, auth } from '../utils/supabase/client.ts';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface Product {
   id: string;

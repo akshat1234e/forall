@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { useAuth } from '../AuthProvider';
-import { supabase } from '../client';
+import { supabase } from '../../utils/supabase/client';
 
 interface Product {
   id: string;
@@ -41,7 +41,7 @@ export function AdminDashboard() {
     totalRevenue: 0,
     activeUsers: 0
   });
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders'>('overview');
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function AdminDashboard() {
       if (productsData) setProducts(productsData);
       if (ordersData) setOrders(ordersData);
 
-      const totalRevenue = ordersData?.reduce((sum, order) => sum + order.total, 0) || 0;
+      const totalRevenue = ordersData?.reduce((sum: number, order: any) => sum + order.total, 0) || 0;
       setStats({
         totalProducts: productsData?.length || 0,
         totalOrders: ordersData?.length || 0,

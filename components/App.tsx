@@ -72,19 +72,9 @@ export default function App() {
     window.history.pushState({}, '', '/products');
   };
 
-  const navigateToHome = () => {
-    setCurrentPage('home');
-    window.history.pushState({}, '', '/');
-  };
-
   const navigateToBlog = () => {
     setCurrentPage('blog');
     window.history.pushState({}, '', '/blog');
-  };
-
-  const navigateToAdmin = () => {
-    setCurrentPage('admin');
-    window.history.pushState({}, '', '/admin');
   };
 
   if (currentPage === 'admin') {

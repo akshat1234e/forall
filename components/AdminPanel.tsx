@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
-import { apiClient, auth } from './client';
-import { toast } from 'sonner@2.0.3';
+import { apiClient, auth } from '../utils/supabase/client';
+import { toast } from 'sonner';
 import { 
   Package, 
-  Users, 
   Mail, 
   MessageSquare, 
   DollarSign,

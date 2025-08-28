@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { Mail, Gift, Sparkles, Check, Loader2 } from 'lucide-react';
 import { apiClient } from '../utils/supabase/client.ts';
 
@@ -24,7 +24,7 @@ export function NewsletterSection() {
       setIsLoading(true);
       
       try {
-        const response = await apiClient.subscribeNewsletter(email);
+        await apiClient.subscribeNewsletter(email);
         setIsSubscribed(true);
         toast.success('Welcome to our glow community! Check your email for your discount code.');
       } catch (apiError) {
