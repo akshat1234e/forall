@@ -4,6 +4,7 @@ import { AuthProvider } from './AuthProvider';
 import { CartProvider } from './CartProvider';
 import { Header } from './Header';
 import { HeroSection } from './HeroSection';
+import { AboutSection } from './AboutSection';
 import { FeaturedProducts } from './FeaturedProducts';
 import { TestimonialsSection } from './TestimonialsSection';
 import { BlogPreview } from './BlogPreview';
@@ -158,6 +159,9 @@ export default function App() {
           <main>
             {/* Hero Section */}
             <HeroSection />
+
+            {/* About Section */}
+            <AboutSection />
 
             {/* Featured Products */}
             <FeaturedProducts onNavigateToProducts={navigateToProducts} />

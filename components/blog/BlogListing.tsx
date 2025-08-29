@@ -7,13 +7,13 @@ interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt?: string;
   author: string;
-  publishedAt: string;
-  readTime: number;
-  tags: string[];
-  category: string;
-  featuredImage: string;
+  published_at: string;
+  read_time?: number;
+  tags?: string[];
+  category?: string;
+  featured_image?: string;
 }
 
 interface BlogListingProps {
@@ -26,14 +26,14 @@ export function BlogListing({ posts, onPostClick }: BlogListingProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
 
-  const categories = ['all', ...Array.from(new Set(posts.map(p => p.category)))];
-  const tags = ['all', ...Array.from(new Set(posts.flatMap(p => p.tags)))];
+  const categories = ['all', ...Array.from(new Set(posts.map(p => p.category).filter(Boolean)))];
+  const tags = ['all', ...Array.from(new Set(posts.flatMap(p => p.tags || [])))];
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+                         (post.excerpt || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
-    const matchesTag = selectedTag === 'all' || post.tags.includes(selectedTag);
+    const matchesTag = selectedTag === 'all' || (post.tags || []).includes(selectedTag);
     
     return matchesSearch && matchesCategory && matchesTag;
   });
@@ -92,18 +92,20 @@ export function BlogListing({ posts, onPostClick }: BlogListingProps) {
             className="bg-card rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
             onClick={() => onPostClick(post.slug)}
           >
-            <div className="aspect-video overflow-hidden">
-              <img
-                src={post.featuredImage}
-                alt={post.title}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
+            {post.featured_image && (
+              <div className="aspect-video overflow-hidden">
+                <img
+                  src={post.featured_image}
+                  alt={post.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            )}
             
             <div className="p-6">
               <div className="flex flex-wrap gap-2 mb-3">
-                <Badge variant="secondary">{post.category}</Badge>
-                {post.tags.slice(0, 2).map(tag => (
+                {post.category && <Badge variant="secondary">{post.category}</Badge>}
+                {(post.tags || []).slice(0, 2).map(tag => (
                   <Badge key={tag} variant="outline" className="text-xs">
                     {tag}
                   </Badge>
@@ -114,9 +116,11 @@ export function BlogListing({ posts, onPostClick }: BlogListingProps) {
                 {post.title}
               </h2>
               
-              <p className="text-muted-foreground mb-4 line-clamp-3">
-                {post.excerpt}
-              </p>
+              {post.excerpt && (
+                <p className="text-muted-foreground mb-4 line-clamp-3">
+                  {post.excerpt}
+                </p>
+              )}
               
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <div className="flex items-center gap-4">
@@ -124,15 +128,17 @@ export function BlogListing({ posts, onPostClick }: BlogListingProps) {
                     <User className="w-3 h-3" />
                     <span>{post.author}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{post.readTime} min</span>
-                  </div>
+                  {post.read_time && (
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      <span>{post.read_time} min</span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                  <span>{new Date(post.published_at).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>

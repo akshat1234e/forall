@@ -1,14 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BlogListing } from './BlogListing';
 import { BlogPost } from './BlogPost';
 import { BlogSEO } from './BlogSEO';
-import { blogPosts } from './BlogData';
+import { blogApi } from '../../utils/supabase/backend';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
+
+interface BlogPostType {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  content: string;
+  author: string;
+  published_at: string;
+  read_time?: number;
+  tags?: string[];
+  category?: string;
+  featured_image?: string;
+  seo_title?: string;
+  meta_description?: string;
+  related_products?: string[];
+}
 
 export function BlogPage() {
   const [currentView, setCurrentView] = useState<'listing' | 'post'>('listing');
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [blogPosts, setBlogPosts] = useState<BlogPostType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadBlogPosts();
+  }, []);
+
+  const loadBlogPosts = async () => {
+    try {
+      const data = await blogApi.getAll();
+      setBlogPosts(data || []);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePostClick = (slug: string) => {
     setSelectedPost(slug);
@@ -23,6 +57,14 @@ export function BlogPage() {
   };
 
   const currentPost = selectedPost ? blogPosts.find(p => p.slug === selectedPost) : null;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading blog posts...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,12 +91,12 @@ export function BlogPage() {
       ) : currentPost ? (
         <>
           <BlogSEO
-            title={currentPost.seoTitle || currentPost.title}
-            description={currentPost.metaDescription || currentPost.excerpt}
-            image={currentPost.featuredImage}
+            title={currentPost.seo_title || currentPost.title}
+            description={currentPost.meta_description || currentPost.excerpt}
+            image={currentPost.featured_image}
             url={`${window.location.origin}/blog/${currentPost.slug}`}
             author={currentPost.author}
-            publishedAt={currentPost.publishedAt}
+            publishedAt={currentPost.published_at}
             tags={currentPost.tags}
             category={currentPost.category}
           />

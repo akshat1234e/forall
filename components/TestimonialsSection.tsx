@@ -2,72 +2,45 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Star, Quote } from 'lucide-react';
+import { testimonialsApi } from '../utils/supabase/backend';
 
 interface Testimonial {
-  id: number;
+  id: string;
   name: string;
-  age: number;
-  location: string;
+  age?: number;
+  location?: string;
   rating: number;
   text: string;
-  image: string;
-  product: string;
-  beforeAfter?: {
-    before: string;
-    after: string;
-  };
+  image?: string;
+  product?: string;
 }
 
-const testimonials: Testimonial[] = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    age: 32,
-    location: "Los Angeles, CA",
-    rating: 5,
-    text: "ForAll Herbals completely transformed my skin! The Radiance Renewal Serum gave me the glow I've been searching for. After just 4 weeks, my dark spots faded and my skin feels incredibly smooth and hydrated.",
-    image: "https://images.unsplash.com/photo-1645388195766-45d19288e2b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0JTIwbmF0dXJhbCUyMGJlYXV0eXxlbnwxfHx8fDE3NTYwNTI5MDN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    product: "Radiance Renewal Serum"
-  },
-  {
-    id: 2,
-    name: "Maria Rodriguez",
-    age: 28,
-    location: "Miami, FL",
-    rating: 5,
-    text: "I've tried countless skincare products, but nothing compares to ForAll Herbals. The natural ingredients are so gentle yet effective. My sensitive skin has never looked better, and I love that it's all organic!",
-    image: "https://images.unsplash.com/photo-1710196598824-ca4ca5fefae4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHNtaWxpbmclMjBwb3J0cmFpdCUyMHNraW5jYXJlfGVufDF8fHx8MTc1NjA1MjkwNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    product: "Nourishing Night Cream"
-  },
-  {
-    id: 3,
-    name: "Emily Chen",
-    age: 35,
-    location: "Seattle, WA",
-    rating: 5,
-    text: "As someone with mature skin, I was skeptical about trying another brand. But ForAll Herbals exceeded all my expectations! The Botanical Face Oil has reduced my fine lines significantly, and my skin feels 10 years younger.",
-    image: "https://images.unsplash.com/photo-1738177111446-5ea95e2c4a5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGhhcHB5JTIwcG9ydHJhaXQlMjBuYXR1cmFsfGVufDF8fHx8MTc1NjA1MjkxMHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    product: "Botanical Face Oil"
-  },
-  {
-    id: 4,
-    name: "Jessica Taylor",
-    age: 26,
-    location: "New York, NY",
-    rating: 5,
-    text: "The Gentle Eye Cream is a game-changer! My under-eye circles are barely visible now, and the puffiness is completely gone. I wake up looking refreshed every morning. Highly recommend to anyone struggling with tired-looking eyes!",
-    image: "https://images.unsplash.com/photo-1645388195766-45d19288e2b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0JTIwbmF0dXJhbCUyMGJlYXV0eXxlbnwxfHx8fDE3NTYwNTI5MDN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    product: "Gentle Eye Cream"
-  }
-];
-
 export function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
+  useEffect(() => {
+    loadTestimonials();
+  }, []);
+
+  const loadTestimonials = async () => {
+    try {
+      const data = await testimonialsApi.getAll();
+      setTestimonials(data || []);
+    } catch (error) {
+      console.error('Error loading testimonials:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Auto-rotate testimonials
   useEffect(() => {
+    if (testimonials.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => 
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
@@ -75,9 +48,29 @@ export function TestimonialsSection() {
     }, 5000); // Change every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   const currentTestimonial = testimonials[currentIndex];
+
+  if (loading) {
+    return (
+      <section className="py-20 lg:py-28 gradient-peach">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-lg">Loading testimonials...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!testimonials.length) {
+    return (
+      <section className="py-20 lg:py-28 gradient-peach">
+        <div className="container mx-auto px-4 text-center">
+          <div className="text-lg">No testimonials available.</div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -182,22 +175,24 @@ export function TestimonialsSection() {
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <ImageWithFallback
-                      src={currentTestimonial.image}
+                      src={currentTestimonial.image || 'https://images.unsplash.com/photo-1645388195766-45d19288e2b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0JTIwbmF0dXJhbCUyMGJlYXV0eXxlbnwxfHx8fDE3NTYwNTI5MDN8MA&ixlib=rb-4.1.0&q=80&w=1080'}
                       alt={currentTestimonial.name}
                       className="w-full h-full object-cover"
                     />
                   </motion.div>
 
                   {/* Floating Product Badge */}
-                  <motion.div
-                    className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full px-4 py-2 shadow-lg"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <span className="text-sm font-medium text-primary geometric-font">
-                      Using: {currentTestimonial.product}
-                    </span>
-                  </motion.div>
+                  {currentTestimonial.product && (
+                    <motion.div
+                      className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full px-4 py-2 shadow-lg"
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <span className="text-sm font-medium text-primary geometric-font">
+                        Using: {currentTestimonial.product}
+                      </span>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
 
@@ -222,7 +217,7 @@ export function TestimonialsSection() {
                         stiffness: 200
                       }}
                     >
-                      <Star className="w-6 h-6 text-yellow-400 fill-current" />
+                      <Star className={`w-6 h-6 ${i < currentTestimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
                     </motion.div>
                   ))}
                 </div>
@@ -247,7 +242,9 @@ export function TestimonialsSection() {
                     {currentTestimonial.name}
                   </h4>
                   <p className="text-primary/70 geometric-font">
-                    Age {currentTestimonial.age} • {currentTestimonial.location}
+                    {currentTestimonial.age && `Age ${currentTestimonial.age}`}
+                    {currentTestimonial.age && currentTestimonial.location && ' • '}
+                    {currentTestimonial.location}
                   </p>
                 </motion.div>
               </motion.div>
@@ -286,7 +283,7 @@ export function TestimonialsSection() {
         >
           <div className="flex items-center justify-center gap-8 text-primary/80">
             <div className="text-center">
-              <div className="text-2xl font-bold">5,000+</div>
+              <div className="text-2xl font-bold">{testimonials.length * 1000}+</div>
               <div className="text-sm geometric-font">Happy Customers</div>
             </div>
             <div className="w-px h-8 bg-primary/30" />
