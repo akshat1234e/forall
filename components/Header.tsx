@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { useAuth } from './AuthProvider';
 import { useCart } from './CartProvider';
+import { AuthModal } from './AuthModal';
 
 interface HeaderProps {
   onNavigateToProducts?: () => void;
@@ -13,6 +14,7 @@ interface HeaderProps {
 export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { user, signOut } = useAuth();
   const { itemCount = 0 } = useCart();
 
@@ -125,7 +127,12 @@ export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) 
                 </Button>
               </div>
             ) : (
-              <Button variant="ghost" size="sm" className="rounded-full">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="rounded-full"
+                onClick={() => setShowAuthModal(true)}
+              >
                 <User className="w-4 h-4" />
               </Button>
             )}
@@ -209,7 +216,12 @@ export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) 
                     </Button>
                   </div>
                 ) : (
-                  <Button variant="ghost" size="sm" className="rounded-full">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="rounded-full"
+                    onClick={() => setShowAuthModal(true)}
+                  >
                     <User className="w-4 h-4" />
                   </Button>
                 )}
@@ -218,6 +230,11 @@ export function Header({ onNavigateToProducts, onNavigateToBlog }: HeaderProps) 
           </div>
         )}
       </div>
+      
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
     </header>
   );
 }
