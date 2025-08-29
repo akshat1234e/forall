@@ -15,7 +15,14 @@ import { BlogPage } from './blog';
 import { AdminDashboard } from './admin/AdminDashboard';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog' | 'admin'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'products' | 'blog' | 'admin'>(() => {
+    // Initialize state based on current URL
+    const path = window.location.pathname;
+    if (path === '/admin') return 'admin';
+    if (path === '/products') return 'products';
+    if (path.startsWith('/blog')) return 'blog';
+    return 'home';
+  });
 
   useEffect(() => {
     // Handle URL changes and navigation
@@ -25,7 +32,7 @@ export default function App() {
         setCurrentPage('products');
       } else if (path.startsWith('/blog')) {
         setCurrentPage('blog');
-      } else if (path.startsWith('/admin')) {
+      } else if (path === '/admin') {
         setCurrentPage('admin');
       } else {
         setCurrentPage('home');
