@@ -28,20 +28,29 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setError('');
 
     try {
-      const { error } = isLogin 
-        ? await signIn(email, password)
-        : await signUp(email, password, name);
-
-      if (error) {
-        setError(error.message);
+      if (isLogin) {
+        const { error } = await signIn(email, password);
+        if (error) {
+          setError(error.message);
+        } else {
+          onClose();
+          setEmail('');
+          setPassword('');
+        }
       } else {
-        onClose();
-        setEmail('');
-        setPassword('');
-        setName('');
+        // For signup, use direct Supabase auth
+        const { error } = await signUp(email, password, name);
+        if (error) {
+          setError(error.message);
+        } else {
+          onClose();
+          setEmail('');
+          setPassword('');
+          setName('');
+        }
       }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+    } catch (err: any) {
+      setError(err?.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

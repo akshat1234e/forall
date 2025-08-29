@@ -91,18 +91,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      // Create user on our server (which handles Supabase auth)
-      const serverResponse = await apiClient.signUp(email, password, name);
-      
-      // Then sign them in
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            name: name
+          }
+        }
       });
       
       if (error) throw error;
       
-      return { data: { user: data.user, serverResponse }, error: null };
+      return { data, error: null };
     } catch (error: any) {
       console.error('Sign up error:', error);
       return { data: null, error };
